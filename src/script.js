@@ -2,11 +2,13 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
+import * as dat from "lil-gui";
 
 /**
  * Base
  */
 
+const gui = new dat.GUI();
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 
@@ -236,6 +238,94 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+/**
+ * Debug
+ */
+// Material
+gui
+  .add(parameters, "texture", {
+    1: matcap1Texture,
+    2: matcap2Texture,
+    3: matcap3Texture,
+    4: matcap4Texture,
+    5: matcap5Texture,
+  })
+  .name("Select texture");
+
+// Font
+const fontFolder = gui.addFolder("Font");
+fontFolder
+  .add(parameters, "size")
+  .min(0.1)
+  .max(3)
+  .step(0.1)
+  .onChange(createText);
+fontFolder
+  .add(parameters, "height")
+  .min(0.1)
+  .max(5)
+  .step(0.1)
+  .onChange(createText);
+fontFolder
+  .add(parameters, "curveSegments")
+  .min(1)
+  .max(20)
+  .step(1)
+  .onChange(createText);
+fontFolder.add(parameters, "bevelEnabled").onChange(createText);
+fontFolder
+  .add(parameters, "bevelThickness")
+  .min(0.01)
+  .max(0.1)
+  .step(0.01)
+  .onChange(createText);
+fontFolder
+  .add(parameters, "bevelSize")
+  .min(0.01)
+  .max(0.1)
+  .step(0.01)
+  .onChange(createText);
+fontFolder
+  .add(parameters, "bevelSegments")
+  .min(0)
+  .max(10)
+  .step(1)
+  .onChange(createText);
+
+// Shapes
+const shapesFolder = gui.addFolder("Shapes");
+shapesFolder
+  .add(parameters, "sphereRadius")
+  .min(0.1)
+  .max(2)
+  .step(0.2)
+  .name("Sphere Size")
+  .onChange(createSpheres);
+
+shapesFolder
+  .add(parameters, "boxSize")
+  .min(0.1)
+  .max(3)
+  .step(0.2)
+  .name("Box Size")
+  .onChange(createBoxes);
+
+shapesFolder
+  .add(parameters, "donutSize")
+  .min(0.1)
+  .max(2)
+  .step(0.2)
+  .name("Donut Size")
+  .onChange(createDonuts);
+
+shapesFolder
+  .add(parameters, "noOfItems")
+  .min(50)
+  .max(1000)
+  .step(25)
+  .name("Number of Items")
+  .onChange(createAllShapes);
 
 /**
  * Animate
